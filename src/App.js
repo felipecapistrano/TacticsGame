@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import { useDispatch, useSelector } from "react-redux";
+
+import { MapRender } from "./components/TileMap";
+import { CharacterPanel, ActionMenu } from "./components/UI";
+import { startCombat } from "./redux/actions";
+
+import "./global.css";
 
 function App() {
+  const dispatch = useDispatch();
+  const characters = useSelector((state) => state.characters);
+  dispatch(startCombat(characters));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="game">
+        <MapRender />
+        <ActionMenu />
+        <CharacterPanel />
+      </div>
+    </>
   );
 }
 
