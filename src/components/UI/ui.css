@@ -41,3 +41,14 @@
   transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   z-index: 2;
 }
+
+.turn-counter {
+  display: flex;
+  position: fixed;
+  top: 3%;
+  left: 50%;
+  transform: translate(-50%);
+  max-width: 40%;
+  background-color: rgb(104, 104, 175);
+  border: 2px solid rgb(52, 52, 107);
+}

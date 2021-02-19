@@ -29,6 +29,18 @@ export const moveCharacter = (character, nextPosition) => {
   };
 };
 
+export const endTurn = () => {
+  return {
+    type: "END_TURN",
+  };
+};
+
+export const controlAI = () => {
+  return {
+    type: "CONTROL_AI",
+  };
+};
+
 // ACTIONS UI
 
 export const openCharacterPanel = (character) => {

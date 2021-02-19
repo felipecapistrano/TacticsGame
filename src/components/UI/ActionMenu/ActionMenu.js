@@ -1,6 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 
-import { closeActionMenu, highlightTilesMove } from "../../../redux/actions";
+import {
+  closeActionMenu,
+  highlightTilesMove,
+  endTurn,
+} from "../../../redux/actions";
 import { useCurrentCharacter } from "../../hooks";
 import { TILE_ACTIONS } from "../../constants";
 
@@ -8,8 +12,8 @@ export default function ActionMenu() {
   const dispatch = useDispatch();
   const info = useSelector((state) => state.ui.actionMenu);
   const character = useCurrentCharacter();
-  console.log(character);
-  if (!info.open || !character) return null;
+  
+  if (!info.open || !character || character.enemy) return null;
 
   function moveCycle() {
     dispatch(highlightTilesMove(character, 3));
@@ -18,7 +22,10 @@ export default function ActionMenu() {
 
   return (
     <div className="action-menu">
-      <button onClick={() => moveCycle()}>Move</button>
+      <button disabled={character.hasMoved} onClick={() => moveCycle()}>
+        Move
+      </button>
+      <button onClick={() => dispatch(endTurn())}>Wait</button>
     </div>
   );
 }

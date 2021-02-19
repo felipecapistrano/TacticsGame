@@ -23,10 +23,11 @@ function createTileMap(size) {
   return x;
 }
 
-function getCharacterCoordinates(tileMap, character) {
+function getCharacterCoordinates(tileMap, name) {
   for (var y = 0; y < tileMap.length; y++) {
     for (var x = 0; x < tileMap.length; x++) {
-      if (tileMap[y][x].character === character) return { x, y };
+      if (tileMap[y][x].character && tileMap[y][x].character.name === name)
+        return { x, y };
     }
   }
   return false;
@@ -37,6 +38,7 @@ function highlightTilesMove(tileMap, coordinates, range) {
   for (var y = 0; y < tileMap.length; y++) {
     for (var x = 0; x < tileMap.length; x++) {
       if (
+        !newTileMap[y][x].character &&
         x <= coordinates.x + range &&
         x >= coordinates.x - range &&
         y <= coordinates.y + range &&
@@ -71,16 +73,22 @@ const combat = (state = initialState, action) => {
   switch (action.type) {
     case "START_COMBAT": {
       const characters = action.payload;
-      let first = 0;
-      for (let i = 0; i < characters.length; i++) {
-        if (characters[0].speed > first) first = characters[0];
-      }
-      state.tileMap[4][4].character = first;
-      return { tileMap: [...state.tileMap], characters, turnCharacter: first };
+      characters.sort((a, b) => {
+        return b.speed - a.speed;
+      });
+      const turnCharacter = characters[0];
+      state.tileMap[0][0].character = turnCharacter;
+
+      return { tileMap: [...state.tileMap], characters, turnCharacter };
     }
+
     case "HIGHLIGHT_TILES_MOVE": {
       const character = action.payload;
-      const coordinates = getCharacterCoordinates(state.tileMap, character);
+      const coordinates = getCharacterCoordinates(
+        state.tileMap,
+        character.name
+      );
+      console.log(coordinates);
       const newTileMap = highlightTilesMove(
         state.tileMap,
         coordinates,
@@ -88,17 +96,34 @@ const combat = (state = initialState, action) => {
       );
       return { ...state, tileMap: [...newTileMap] };
     }
+
     case "REMOVE_HIGHLIGHT": {
       const newTileMap = removeHighlight(state.tileMap);
       return { ...state, tileMap: [...newTileMap] };
     }
+
     case "MOVE_CHARACTER":
       const { character, nextPosition } = action.payload;
-      const currentPosition = getCharacterCoordinates(state.tileMap, character);
+      const currentPosition = getCharacterCoordinates(
+        state.tileMap,
+        character.name
+      );
       state.tileMap[currentPosition.y][currentPosition.x].character = null;
       state.tileMap[nextPosition.y][nextPosition.x].character = character;
       const newTileMap = removeHighlight(state.tileMap);
-      return { ...state, tileMap: [...newTileMap] };
+      character.hasMoved = true;
+      return { ...state, character, tileMap: [...newTileMap] };
+
+    case "END_TURN":
+      const characters = state.characters;
+      characters[0].hasMoved = false;
+      characters.push(characters.shift());
+      return {
+        ...state,
+        characters: [...characters],
+        turnCharacter: { ...characters[0] },
+      };
+
     default:
       return state;
   }

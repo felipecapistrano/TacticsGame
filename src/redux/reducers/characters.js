@@ -4,15 +4,19 @@ const sarinha = {
   name: "Sara",
   maxHp: 10,
   maxMp: 10,
-  speed: 3,
-  currentHp: 8,
-  currentMp: 5,
-  move: 4,
+  speed: 4,
+  currentHp: 10,
+  currentMp: 10,
+  move: 3,
   sprite: sara,
   portrait: sara,
+  hasMoved: false,
+  enemy: false,
 };
 
-const characters = (state = [sarinha], action) => {
+const initialState = [sarinha];
+
+const characters = (state = initialState, action) => {
   switch (action.type) {
     case "CREATE_CHARACTER":
       const character = action.payload;
