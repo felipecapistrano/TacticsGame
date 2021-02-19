@@ -8,4 +8,4 @@ Objective: See if I could implement the core gameplay.
 
 Conclusion: It is possible to some extent, but it's better to just use a game focused library.
 
-![alt text](https://prnt.sc/101bdg2)
+![Image from the game](https://prnt.sc/101bdg2)
